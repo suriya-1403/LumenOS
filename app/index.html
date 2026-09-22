@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div class="frame" aria-hidden="true">
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+    </div>
+
+    <main class="hud">
+      <div class="readout">
+        <div class="clock" id="clock">
+          <span class="clock-digits" id="clock-hours">00</span
+          ><span class="clock-colon">:</span
+          ><span class="clock-digits" id="clock-minutes">00</span
+          ><span class="clock-meridiem" id="clock-meridiem">AM</span>
+        </div>
+        <div class="date">
+          <span id="date-day">---</span>
+          <span class="tick-divider"></span>
+          <span id="date-md">--- --</span>
+        </div>
+
+        <div class="baseline" id="baseline" aria-hidden="true"></div>
+
+        <div class="weather" id="weather">
+          <div class="weather-temp">
+            <span id="weather-temp-val">--</span
+            ><span class="weather-deg">°</span>
+          </div>
+          <div class="weather-detail">
+            <span id="weather-condition">LOADING</span>
+            <span class="weather-hilo"
+              >H:<span id="weather-high">--</span>&deg;
+              L:<span id="weather-low">--</span>&deg;</span
+            >
+          </div>
+        </div>
+
+        <div class="portfolio" id="portfolio">
+          <div class="portfolio-value">
+            $<span id="portfolio-total">--</span>
+          </div>
+          <div class="portfolio-change" id="portfolio-change">
+            <span id="portfolio-change-text">LOADING</span>
+          </div>
+        </div>
+
+        <div class="holdings" id="holdings"></div>
+      </div>
+    </main>
+  </body>
+</html>

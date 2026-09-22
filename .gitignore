@@ -1,0 +1,20 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# OS build outputs & VM disk images
+output/
+*.img
+*.img.xz
+*.iso
+
+# Logs
+*.log
+logs/
+
+# Build & Dependency Directories
+node_modules/
+dist/
+target/

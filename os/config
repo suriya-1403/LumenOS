@@ -1,0 +1,32 @@
+# Lumen OS Build Configuration
+# Target: Raspberry Pi 4 / 400 / Compute Module 4 / Raspberry Pi 5
+
+# Base Distribution
+DEBIAN_RELEASE="trixie"
+ARCH="arm64"
+DEBIAN_MIRROR="http://deb.debian.org/debian"
+RPI_MIRROR="http://archive.raspberrypi.com/debian"
+
+# Image Metadata
+OS_NAME="lumen-os"
+OS_VERSION="1.0.0"
+HOSTNAME="lumen"
+DEFAULT_USER="lumen"
+DEFAULT_PASSWORD="lumenpassword"
+TIMEZONE="Etc/UTC"
+LOCALE="en_US.UTF-8"
+
+# Disk Geometry
+# Raw image size in Megabytes (4096MB = 4GB default, expands on first boot or flash)
+IMAGE_SIZE_MB=4096
+BOOT_SIZE_MB=512
+
+# Smart Mirror Display Defaults
+# 0 = normal landscape, 1 = 90 deg portrait, 2 = 180 deg inverted, 3 = 270 deg portrait
+DISPLAY_ROTATION=1
+
+# Audio & Hardware
+ENABLE_I2C=true
+ENABLE_SPI=true
+ENABLE_UART=true
+ENABLE_CAMERA=true

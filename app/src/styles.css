@@ -1,0 +1,436 @@
+@font-face {
+  font-family: "Pixelify Sans";
+  src: url("/src/assets/fonts/pixelify-sans-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/src/assets/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  font-weight: 300 400;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  color-scheme: dark;
+  --void: #000000;
+  --core: #eaf6ff;
+  --hud: #57c7ff;
+  --hud-dim: #1b3d47;
+  --gain: #4ade80;
+  --loss: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--void);
+  overflow: hidden;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--hud);
+  -webkit-user-select: none;
+  user-select: none;
+  animation: power-on 900ms ease-out both;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- outer frame ---- */
+
+.frame {
+  position: fixed;
+  inset: 3.5vh 4vw;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--hud-dim);
+  opacity: 0.8;
+}
+
+.corner--tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner--tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner--bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+.corner--br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* ---- layout ----
+   Portrait mirror panel (1080x1920 / 9:16). Most of the panel stays black
+   so the user's reflection isn't interrupted — the HUD lives in a band
+   near the top, not centered on the whole screen. */
+
+.hud {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  padding-top: 12vh;
+}
+
+.readout {
+  /* Fixed width so a line changing length (a new temperature digit, a
+     portfolio number growing) never reflows/recenters the whole column.
+     Sized for the one real target (Lululemon Studio Mirror 43", 1080x1920
+     portrait panel) — not viewport-relative, since a fluid vw-based size
+     would render differently on this dev window than on that fixed panel. */
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+/* ---- clock ---- */
+
+.clock {
+  font-family: "Pixelify Sans", monospace;
+  font-weight: 700;
+  font-size: 5rem;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.12em;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.clock-digits,
+.clock-colon {
+  color: var(--core);
+  text-shadow:
+    0 0 2px rgba(234, 246, 255, 0.8),
+    0 0 14px rgba(87, 199, 255, 0.45);
+}
+
+.clock-colon {
+  animation: blink 1s steps(1, jump-none) infinite;
+}
+
+.clock-meridiem {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  align-self: flex-start;
+  margin-top: 0.5em;
+  margin-left: 0.2em;
+  color: var(--hud);
+  opacity: 0.75;
+}
+
+/* ---- date ---- */
+
+.date {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  color: var(--hud);
+  opacity: 0.65;
+}
+
+.tick-divider {
+  width: 1px;
+  height: 0.9em;
+  background: var(--hud);
+  opacity: 0.5;
+}
+
+/* ---- baseline: linear instrument readout, replaces the old ring ---- */
+
+.baseline {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+  /* Fixed to the tallest tick state so the pulse animation (transform only,
+     below) never changes this row's box height and shifts everything under
+     it — a tick used to animate `height` directly, which reflowed the whole
+     column on every pulse. */
+  height: 16px;
+}
+
+.baseline-tick {
+  width: 3px;
+  height: 16px;
+  background: var(--hud-dim);
+  transform: scaleY(0.625);
+  transform-origin: bottom;
+  animation: pulse-tick 3.2s steps(4, end) infinite;
+}
+
+/* ---- weather ---- */
+
+.weather {
+  margin-top: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.weather-temp {
+  font-family: "Pixelify Sans", monospace;
+  font-weight: 700;
+  font-size: 1.9rem;
+  color: var(--core);
+  text-shadow: 0 0 10px rgba(87, 199, 255, 0.4);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.weather-deg {
+  font-size: 1.1rem;
+  vertical-align: top;
+}
+
+.weather-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--hud);
+  opacity: 0.65;
+}
+
+.weather-hilo {
+  opacity: 0.7;
+}
+
+/* ---- portfolio ---- */
+
+.portfolio {
+  margin-top: 1.4rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+.portfolio-value {
+  font-family: "Pixelify Sans", monospace;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--core);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.portfolio-change {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--hud);
+  opacity: 0.75;
+}
+
+.portfolio-change.is-gain {
+  color: var(--gain);
+  opacity: 0.9;
+}
+
+.portfolio-change.is-loss {
+  color: var(--loss);
+  opacity: 0.9;
+}
+
+/* ---- holdings ---- */
+
+.holdings {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+}
+
+.holding-row {
+  display: grid;
+  grid-template-columns: 3.4em 5.6em 1fr 3.6em;
+  align-items: center;
+  column-gap: 0.6em;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--hud);
+  opacity: 0.85;
+}
+
+.holding-symbol {
+  opacity: 0.75;
+}
+
+.holding-spark {
+  width: 5.6em;
+  height: 1.9em;
+  overflow: visible;
+}
+
+.holding-spark-baseline {
+  stroke: var(--hud-dim);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 1.5;
+  shape-rendering: crispEdges;
+}
+
+.holding-spark-fill {
+  stroke: none;
+}
+
+.holding-spark-fill.is-gain {
+  fill: color-mix(in srgb, var(--gain) 22%, transparent);
+}
+
+.holding-spark-fill.is-loss {
+  fill: color-mix(in srgb, var(--loss) 22%, transparent);
+}
+
+.holding-spark-fill.is-flat {
+  fill: color-mix(in srgb, var(--hud-dim) 40%, transparent);
+}
+
+.holding-spark-line {
+  fill: none;
+  stroke-width: 1.4;
+  shape-rendering: crispEdges;
+}
+
+.holding-spark-line.is-gain {
+  stroke: var(--gain);
+}
+
+.holding-spark-line.is-loss {
+  stroke: var(--loss);
+}
+
+.holding-spark-line.is-flat {
+  stroke: var(--hud-dim);
+}
+
+.holding-spark-dot {
+  shape-rendering: crispEdges;
+  animation: spark-dot-pulse 2s steps(6, end) infinite;
+}
+
+.holding-spark-dot.is-gain {
+  fill: var(--gain);
+}
+
+.holding-spark-dot.is-loss {
+  fill: var(--loss);
+}
+
+.holding-spark-dot.is-flat {
+  fill: var(--hud-dim);
+}
+
+.holding-value {
+  text-align: right;
+  color: var(--core);
+}
+
+.holding-change {
+  text-align: right;
+}
+
+.holding-change.is-gain {
+  color: var(--gain);
+}
+
+.holding-change.is-loss {
+  color: var(--loss);
+}
+
+/* ---- motion ---- */
+
+@keyframes pulse-tick {
+  0%,
+  85%,
+  100% {
+    background: var(--hud-dim);
+    transform: scaleY(0.625);
+  }
+  92% {
+    background: var(--hud);
+    transform: scaleY(1);
+  }
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes spark-dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes power-on {
+  0% {
+    opacity: 0;
+    filter: brightness(2.2);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+  .baseline-tick,
+  .clock-colon,
+  .holding-spark-dot {
+    animation: none;
+  }
+}
